@@ -1,4 +1,4 @@
-var registerUrl = process.env.CORS_DOMAIN_URL + "api/register";
+var registerUrl = domainURL + "api/register";
 
 $(document).ready(()=>{
     $('#myForm').submit((e)=>{
