@@ -10,7 +10,7 @@ const registerRouter = require("./routes/register");
 const loginRouter = require("./routes/login");
 
 const app = express();
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: process.env.CORS_DOMAIN_URL, credentials: true }));
 app.use(express.static('UI'));
 app.set("views",path.join(__dirname,"UI/pages"));
 app.set('view engine','ejs');
