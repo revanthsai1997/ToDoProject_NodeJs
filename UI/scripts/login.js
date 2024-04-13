@@ -29,6 +29,7 @@ $(document).ready(function () {
                         $('#loginError').text(response);
                         $('#loginError').show();
                     }else{
+                        alert("Invalid Credentials!")
                         throw new Error("User Login failed!");
                     }
                 }
