@@ -1,10 +1,10 @@
-var dashboardUrl = "http://localhost:3000/api/dashboard";
-var userDetailsUrl = "http://localhost:3000/api/userdetails";
-var logOutUrl = "http://localhost:3000/api/logout";
-var addTodoUrl = "http://localhost:3000/api/addTodo";
-var deleteTodoUrl = "http://localhost:3000/api/deleteTodo";
-var completeTodoUrl = "http://localhost:3000/api/completeTodo";
-var updateTodoUrl = "http://localhost:3000/api/updateTodo";
+var dashboardUrl = process.env.CORS_DOMAIN_URL + "api/dashboard";
+var userDetailsUrl = process.env.CORS_DOMAIN_URL + "api/userdetails";
+var logOutUrl = process.env.CORS_DOMAIN_URL + "api/logout";
+var addTodoUrl = process.env.CORS_DOMAIN_URL + "api/addTodo";
+var deleteTodoUrl = process.env.CORS_DOMAIN_URL + "api/deleteTodo";
+var completeTodoUrl = process.env.CORS_DOMAIN_URL + "api/completeTodo";
+var updateTodoUrl = process.env.CORS_DOMAIN_URL + "api/updateTodo";
 
 $(document).ready(() => {
   $(".editTodoDiv").hide();

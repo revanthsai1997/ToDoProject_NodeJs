@@ -1,4 +1,4 @@
-var loginUrl = "http://localhost:3000/api/login";
+var loginUrl = process.env.CORS_DOMAIN_URL + "api/login";
 
 $(document).ready(function () {
     $('#loginForm').submit(()=>{
