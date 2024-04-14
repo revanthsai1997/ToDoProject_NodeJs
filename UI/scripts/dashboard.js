@@ -1,19 +1,24 @@
-var dashboardUrl = domainURL +"api/dashboard";
-var userDetailsUrl = domainURL +"api/userdetails";
-var logOutUrl = domainURL +"api/logout";
-var addTodoUrl = domainURL +"api/addTodo";
-var deleteTodoUrl = domainURL +"api/deleteTodo";
-var completeTodoUrl = domainURL +"api/completeTodo";
-var updateTodoUrl = domainURL +"api/updateTodo";
+var dashboardUrl = domainURL + "api/dashboard";
+var userDetailsUrl = domainURL + "api/userdetails";
+var logOutUrl = domainURL + "api/logout";
+var addTodoUrl = domainURL + "api/addTodo";
+var deleteTodoUrl = domainURL + "api/deleteTodo";
+var completeTodoUrl = domainURL + "api/completeTodo";
+var updateTodoUrl = domainURL + "api/updateTodo";
 
 $(document).ready(() => {
   $(".editTodoDiv").hide();
   checkSession();
 
   $("#logOutBtn").click(() => {
+    const token = getToken();
+
     fetch(logOutUrl, {
       method: "GET",
       credentials: "include",
+      headers: {
+        Authorization: token,
+      },
     })
       .then((response) => {
         if (response.status != 200) {
@@ -21,6 +26,7 @@ $(document).ready(() => {
           throw new error("logout failed");
         } else {
           alert("Logout Successfull");
+          localStorage.clear();
           window.location.href = "/pages/login.html";
         }
       })
@@ -30,6 +36,8 @@ $(document).ready(() => {
   });
 
   $("#addTodoBtn").click(() => {
+    const token = getToken();
+
     var newTodo = $("#addNewTodo").val();
     if (newTodo.trim() == "") {
       alert("Todo should not be empty");
@@ -39,13 +47,18 @@ $(document).ready(() => {
     fetch(addTodoUrl, {
       method: "POST",
       headers: {
+        Authorization: token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
       credentials: "include",
     })
       .then((response) => {
-        if (response.status != 200) {
+        if (response.status == 401) {
+          alert("Unauthorized User");
+          window.location.href = "/pages/login.html";
+          return;
+        } else if (response.status != 200) {
           alert("Error");
           return;
         }
@@ -53,7 +66,7 @@ $(document).ready(() => {
       })
       .then((data) => {
         alert("Added todo successfully");
-        window.location.href = "/api/dashboard";
+        window.location.href = "/api/dashboard/"+token;
         return false;
       })
       .catch((error) => {
@@ -63,9 +76,14 @@ $(document).ready(() => {
 });
 
 const getUserDetails = () => {
+  const token = getToken();
+
   fetch(userDetailsUrl, {
     method: "GET",
     credentials: "include",
+    headers:{
+      'Authorization':token
+    }
   })
     .then((response) => {
       if (response.status == 401) {
@@ -86,9 +104,13 @@ const getUserDetails = () => {
 };
 
 const checkSession = () => {
+  const token = getToken();
   fetch(dashboardUrl, {
     method: "GET",
     credentials: "include",
+    headers:{
+      'Authorization':token
+    }
   })
     .then((response) => {
       if (response.status != 200) {
@@ -105,14 +127,34 @@ const checkSession = () => {
     });
 };
 
+const getToken = () => {
+  const token = localStorage.getItem("AuthorizationToken");
+  if (token == null) {
+    alert("Unauthorized. Redirecting to login page.");
+    window.location.href = "/pages/login.html";
+    return;
+  }
+  return token;
+};
+
 const todoDelete = (el) => {
+  const token = getToken();
+
   const todoid = $(el).parent().parent().data().id;
   fetch(deleteTodoUrl + "/" + todoid, {
     method: "DELETE",
     credentials: "include",
+    headers:{
+      'Authorization':token
+    }
   })
     .then((response) => {
-      if (response.status != 200) {
+      if(response.status == 401){
+        alert("Unauthorized User");
+        window.location.href = '/pages/login.html';
+        return;
+      }
+      else if (response.status != 200) {
         alert("Error");
         return;
       }
@@ -120,7 +162,7 @@ const todoDelete = (el) => {
     })
     .then((data) => {
       alert("Deleted todo successfully");
-      window.location.href = "/api/dashboard";
+      window.location.href = "/api/dashboard/"+token;
       return false;
     })
     .catch((error) => {
@@ -129,14 +171,24 @@ const todoDelete = (el) => {
 };
 
 const todoCheck = (el) => {
+  const token = getToken();
+
   if (el.checked == true) {
     const todoid = $(el).closest("tr").data().id;
     fetch(completeTodoUrl + "/" + todoid, {
       method: "GET",
       credentials: "include",
+      headers:{
+        'Authorization':token
+      }
     })
       .then((response) => {
-        if (response.status != 200) {
+        if(response.status == 401){
+          alert("Unauthorized User");
+          window.location.href = '/pages/login.html';
+          return;
+        }
+        else if (response.status != 200) {
           alert("Error");
           return;
         }
@@ -144,7 +196,7 @@ const todoCheck = (el) => {
       })
       .then((data) => {
         alert("Completed todo successfully");
-        window.location.href = "/api/dashboard";
+        window.location.href = "/api/dashboard/"+token;
         return false;
       })
       .catch((error) => {
@@ -171,6 +223,8 @@ const todoUpdateCancel = (el) => {
 };
 
 const todoUpdate = (el) => {
+  const token = getToken();
+
   const newTodo = $(el).siblings("input").val();
   const todoid = $(el).closest("tr").data().id;
   if (newTodo.trim() == "") {
@@ -181,13 +235,19 @@ const todoUpdate = (el) => {
   fetch(updateTodoUrl + "/" + todoid, {
     method: "PATCH",
     headers: {
+      'Authorization':token,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-    credentials: "include",
+    credentials: "include"
   })
     .then((response) => {
-      if (response.status != 200) {
+      if(response.status == 401){
+        alert("Unauthorized User");
+        window.location.href = '/pages/login.html';
+        return;
+      }
+      else if (response.status != 200) {
         alert("Error");
         return;
       }
@@ -195,7 +255,7 @@ const todoUpdate = (el) => {
     })
     .then((data) => {
       alert("Updated todo successfully");
-      window.location.href = "/api/dashboard";
+      window.location.href = "/api/dashboard/"+token;
       return false;
     })
     .catch((error) => {

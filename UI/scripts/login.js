@@ -28,6 +28,8 @@ $(document).ready(function () {
                     if(response.status == 400){
                         $('#loginError').text(response);
                         $('#loginError').show();
+                        response.json().then(msg => alert(msg.message));
+                        return;
                     }else{
                         alert("Invalid Credentials!")
                         throw new Error("User Login failed!");
@@ -38,7 +40,10 @@ $(document).ready(function () {
             .then((data)=>{
                 $('#loginError').hide();
                 alert(data.message);
-                window.location.href = '/api/dashboard';
+                localStorage.clear();
+                localStorage.setItem('AuthorizationToken',data.token);
+                console.log(data.token)
+                window.location.href = '/api/dashboard/'+data.token;
                 return false;
             })
             .catch(error =>{

@@ -31,15 +31,14 @@ $(document).ready(()=>{
             .then(response => {
                 console.log(response);
                 if(!response.ok){
-                    alert("User registration failed!");
+                    response.json().then(msg => alert(msg.message));
                     throw new Error("User registration failed!");
                 }
-                // const allowOrigin = response.headers.get('Access-Control-Allow-Origin');
-                // console.log('Access-Control-Allow-Origin:', allowOrigin);
                 return response.json();
             })
             .then(data => {
                 console.log('Success');
+                alert("User Registration Success");
                 window.location.replace('/pages/login.html');
                 return false;
             })
