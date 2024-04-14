@@ -51,7 +51,7 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/dashboard", async(req, res) => {
-  if (req.session.user) {
+  if (await req.session.user) {
     // res.status(200).json({ message: "Authenticated", user: req.session.user });
     const resData={
       user:req.session.user,
@@ -77,7 +77,7 @@ router.get('/userdetails', (req, res) => {
 
 router.post('/addTodo', async (req, res) => {
   try{
-    if(req.session.user)
+    if(await req.session.user)
     {
       const todo = new Todo({
         user: req.session.user.email,
