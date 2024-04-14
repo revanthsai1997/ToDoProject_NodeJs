@@ -32,7 +32,7 @@ router.post("/login", async (req, res) => {
           email: user.email,
         };
         req.session.user = userSession;
-        myCache.set("loggedinUser", userSession);
+        myCache.set("loggedinUser", userSession,1*60*60*1000);
         res
           .status(200)
           .json({ message: "User login Successful for first time" });
