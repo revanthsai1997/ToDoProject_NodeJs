@@ -66,7 +66,7 @@ router.get("/dashboard", async(req, res) => {
 
 router.get('/userdetails', (req, res) => {
   try{
-    if(req.session.user.email == myCache.get('loggedinUser').email)
+    if(myCache.get('loggedinUser'))
       res.status(200).json(myCache.get('loggedinUser'));
     else
       res.status(401).json({ error: "Unauthorized" });
