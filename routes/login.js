@@ -77,10 +77,10 @@ router.get('/userdetails', (req, res) => {
 
 router.post('/addTodo', async (req, res) => {
   try{
-    if(await req.session.user)
+    if(myCache.get('loggedinUser'))
     {
       const todo = new Todo({
-        user: req.session.user.email,
+        user: myCache.get('loggedinUser').email,
         todo: req.body.todo,
         todoId: uniqid()+uniqid.process()+uniqid.time()+ (new Date().toString())
       });
@@ -96,7 +96,7 @@ router.post('/addTodo', async (req, res) => {
 
 router.delete('/deleteTodo/:id', async (req, res) => {
   try{
-    if(req.session.user)
+    if(myCache.get('loggedinUser'))
     {
       await Todo.findOneAndDelete({todoId:req.params.id});
       res.status(200).json({message:"Success"});
@@ -110,7 +110,7 @@ router.delete('/deleteTodo/:id', async (req, res) => {
 
 router.get('/completeTodo/:id', async (req, res) => {
   try{
-    if(req.session.user)
+    if(myCache.get('loggedinUser'))
     {
       await Todo.findOneAndUpdate({todoId:req.params.id},{isCompleted:true});
       res.status(200).json({message:"Success"});
@@ -124,7 +124,7 @@ router.get('/completeTodo/:id', async (req, res) => {
 
 router.patch('/updateTodo/:id', async (req, res) => {
   try{
-    if(req.session.user)
+    if(myCache.get('loggedinUser'))
     {
       await Todo.findOneAndUpdate({todoId:req.params.id},{todo:req.body.todo});
       res.status(200).json({message:"Success"});
