@@ -77,6 +77,7 @@ router.get('/userdetails', (req, res) => {
 
 router.post('/addTodo', async (req, res) => {
   try{
+    console.log(myCache);
     if(myCache.get('loggedinUser'))
     {
       const todo = new Todo({
