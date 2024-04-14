@@ -51,7 +51,7 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/dashboard", async(req, res) => {
-  if (await req.session.user) {
+  if (req.session.user) {
     // res.status(200).json({ message: "Authenticated", user: req.session.user });
     const resData={
       user:req.session.user,
@@ -66,10 +66,10 @@ router.get("/dashboard", async(req, res) => {
 
 router.get('/userdetails', (req, res) => {
   try{
-    if(myCache.get('loggedinUser'))
+    // if(myCache.get('loggedinUser'))
       res.status(200).json(myCache.get('loggedinUser'));
-    else
-      res.status(401).json({ error: "Unauthorized" });
+    // else
+    //   res.status(401).json({ error: "Unauthorized" });
   }catch(error){
     console.error(error);
   }
